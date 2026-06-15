@@ -1,3 +1,7 @@
+# NOTE: This agent has been merged into documentarian.md (now runs at Haiku in a single pass).
+# This file is kept as a writing-standards reference only.
+# Do not spawn this as a subagent — the documentarian handles all documentation directly.
+
 # SKILL: technical-writer
 # MODEL: claude-haiku-4-5
 # PHASE: DELIVERY (subagent of documentarian)

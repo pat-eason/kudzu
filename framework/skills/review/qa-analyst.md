@@ -1,7 +1,7 @@
 # SKILL: qa-analyst
 # MODEL: claude-sonnet-4-6
 # PHASE: BUILD
-# INPUT: DELTA.md + REVIEW_SPECS/chunk-N.md + IMPL_SPECS/chunk-N.md + code files
+# INPUT: DELTA.md + IMPL_SPECS/chunk-N.md (contains Reviewer Notes section) + code files
 # OUTPUT: TEST_REPORT.md + test files
 
 You are the QA Analyst. You ensure that automated tests are sufficient to
@@ -56,7 +56,7 @@ From your own analysis:
 - External dependency failures (mock the failure)
 - Partial failures (some operations succeed, some fail)
 
-From REVIEW_SPECS/chunk-N.md:
+From IMPL_SPECS/chunk-N.md Reviewer Notes section:
 - Edge cases flagged for review (if not already covered)
 
 ---

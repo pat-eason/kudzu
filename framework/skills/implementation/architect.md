@@ -6,7 +6,7 @@
 # INPUT (security escalation mode): SECURITY_REVIEW.md with NEEDS_ARCHITECT verdict
 # INPUT (blocker mode): BLOCKER.md + IMPL_SPECS/chunk-N.md
 # INPUT (final review mode): PRD.md + CONTEXT.md + all DELTA.md files
-# OUTPUT (plan mode): ARCH_DECISIONS.md + CHUNKS.json + IMPL_SPECS/chunk-N.md + REVIEW_SPECS/chunk-N.md
+# OUTPUT (plan mode): ARCH_DECISIONS.md + CHUNKS.json + IMPL_SPECS/chunk-N.md
 # OUTPUT (escalation): ARCH_REVIEW.md
 # OUTPUT (security escalation): ARCH_REVIEW.md + amended IMPL_SPECS/chunk-N.md
 # OUTPUT (blocker): BLOCKER_RESOLUTION.md + amended IMPL_SPECS/chunk-N.md
@@ -15,7 +15,7 @@
 # MODES
 # MODE 1: DECOMPOSITION       — after Gate 2, produces full plan + specs
 # MODE 2: ESCALATION REVIEW   — triggered by code-reviewer escalate_architect: true
-# MODE 3: FINAL PRD REVIEW    — after all chunks complete
+# MODE 3: FINAL PRD REVIEW    — after all chunks complete (can run at Sonnet — review task, not design)
 # MODE 4: SECURITY ESCALATION — triggered by SECURITY_REVIEW.md NEEDS_ARCHITECT verdict
 # MODE 5: BLOCKER RESOLUTION  — triggered by engineer BLOCKER.md
 
@@ -79,18 +79,13 @@ Same as v1 framework plus:
 - Chunks that are load-bearing must have `load_bearing: true`
 - First chunk always: project scaffold + types + no logic
 
-### Dual Spec Output Per Chunk
+### Spec Output Per Chunk
 
-For every chunk, produce two spec files:
+For every chunk, produce one spec file that serves both the engineer and the reviewer:
 
-**IMPL_SPECS/chunk-N.md** — for the Software Engineer
-Focused on: what to build, exact interfaces, constraints, success criteria.
-Remove all ambiguity. The engineer should not need to make design decisions.
-
-**REVIEW_SPECS/chunk-N.md** — for the Code Reviewer
-Focused on: what to verify, edge cases to check, security surface to review,
-interface contracts to validate.
-The reviewer should not need to re-read the impl spec to know what to look for.
+**IMPL_SPECS/chunk-N.md** — for both the Software Engineer and Code Reviewer.
+Engineer section: what to build, exact interfaces, constraints, success criteria.
+Reviewer section (appended): edge cases to probe, security surface, escalation triggers.
 
 ### IMPL_SPECS/chunk-N.md Format
 
@@ -139,51 +134,23 @@ The reviewer should not need to re-read the impl spec to know what to look for.
 
 ## Notes
 [Anything else that reduces ambiguity]
-```
 
-### REVIEW_SPECS/chunk-N.md Format
+## Reviewer Notes
 
-```markdown
-# Review Spec — Chunk [N]: [title]
-
-## What Was Supposed to Be Built
-[Goal sentence from impl spec]
-
-## Success Criteria to Verify
-[Copy verbatim from impl spec — the reviewer verifies these, not re-derives them]
-
-## Interfaces to Validate
-[Check that implemented signatures match these exactly]
-
-## Constraints to Enforce
-[If any impl spec constraint was violated, the review must FAIL]
-[List them explicitly]
-
-## Edge Cases to Probe
+### Edge Cases to Probe
 [What to look for that the engineer might have missed]
 
-## Security Surface
+### Security Surface
 [Any security-relevant behavior this chunk introduces]
 [Escalate to security-analyst if touched]
 [Flag: security_review_required: true | false]
 
-## Escalation Triggers
+### Escalation Triggers
 [Structured — do not use freeform prose here]
 ```
 TRIGGER_TYPE: architect | security | human
 CONDITION: [specific observable condition in the code]
 THRESHOLD: [at what point this condition becomes a trigger]
-```
-Example:
-```
-TRIGGER_TYPE: security
-CONDITION: credentials or tokens present in any DELTA.md file path
-THRESHOLD: any match
-```
-```
-TRIGGER_TYPE: architect
-CONDITION: interface signature differs from IMPL_SPECS by more than parameter naming
-THRESHOLD: type mismatch or missing method
 ```
 [If no escalation triggers apply to this chunk: write "None."]
 ```

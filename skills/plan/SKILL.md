@@ -7,7 +7,7 @@ description: >
 argument-hint: "[optional: path to a .kudzu/ use-case directory, PRD file, Linear issue URL, or leave empty to auto-detect]"
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task
-model: claude-opus-4-6
+model: claude-sonnet-4-6
 ---
 
 You are the Kudzu PLAN phase orchestrator.
@@ -49,7 +49,7 @@ Determine `KUDZU_DIR` before reading any state or writing any file.
      `/kudzu:research` first, or pass a PRD path as an argument."
 
 All file writes use `$KUDZU_DIR/<FILENAME>` unless stated otherwise.
-`IMPL_SPECS/` and `REVIEW_SPECS/` subdirectories live inside `$KUDZU_DIR`.
+`IMPL_SPECS/` subdirectory lives inside `$KUDZU_DIR`.
 
 ## Gate check
 
@@ -90,20 +90,20 @@ ARCH_DECISIONS.md must use structured Tech Stack format and number every decisio
 Same architect subagent continues:
 Output: `$KUDZU_DIR/CHUNKS.json`
        + `$KUDZU_DIR/IMPL_SPECS/chunk-N.md`
-       + `$KUDZU_DIR/REVIEW_SPECS/chunk-N.md`
 
 Each IMPL_SPECS must include:
 - "Relevant Arch Decisions" section with AD-N/LBI-N references
 - Exact TypeScript/language interface signatures (not pseudocode)
 - Structured "Do Not" list
 
-Each REVIEW_SPECS must include:
-- Structured escalation triggers (TRIGGER_TYPE/CONDITION/THRESHOLD)
+Each IMPL_SPECS must include a `## Reviewer Notes` section at the bottom with:
+- Edge cases to probe
 - Security surface flags
+- Structured escalation triggers (TRIGGER_TYPE/CONDITION/THRESHOLD)
 
 ## Step 4: Decomposition review
 
-Spawn Concept Reviewer subagent (Opus) via Task:
+Spawn Concept Reviewer subagent (Sonnet) via Task:
 Instructions: `@kudzu:concept-reviewer`
 Mode 2 (Decomposition review)
 Input: `$KUDZU_DIR/CHUNKS.json` + `$KUDZU_DIR/IMPL_SPECS/` + `$KUDZU_DIR/PRD.md`
@@ -158,7 +158,7 @@ Update `$KUDZU_DIR/CONTEXT.md`:
 
 ## Step 7: Linear setup (if Gate 3 approved)
 
-Spawn Project Manager subagent (Sonnet) via Task:
+Spawn Project Manager subagent (Haiku) via Task:
 Instructions: `@kudzu:project-manager`
 Mode 1 (Project setup)
 Input: `$KUDZU_DIR/GATE_3_DECISION.md` + `$KUDZU_DIR/CHUNKS.json` + `$KUDZU_DIR/PRD.md`

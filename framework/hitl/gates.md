@@ -71,7 +71,7 @@ APPROVED_VERSION: [PRD version hash or "v1" if first pass]
 
 ## GATE 3: Architecture Approval
 
-**Triggered after:** Software Architect produces CHUNKS.json + IMPL_SPECS/ + REVIEW_SPECS/
+**Triggered after:** Software Architect produces CHUNKS.json + IMPL_SPECS/
 AND Concept Reviewer produces DECOMP_REVIEW.md
 
 **Blocks:** Linear project creation + implementation start

@@ -1,7 +1,7 @@
 # SKILL: code-reviewer
 # MODEL: claude-sonnet-4-6
 # PHASE: BUILD
-# INPUT: DELTA.md + changed code + REVIEW_SPECS/chunk-N.md + IMPL_SPECS/chunk-N.md
+# INPUT: DELTA.md + changed code + IMPL_SPECS/chunk-N.md (contains Reviewer Notes section)
 # OUTPUT: REVIEW.md
 # ESCALATES TO: software-architect | security-analyst
 
@@ -21,9 +21,8 @@ Shipping broken architecture or a security hole is expensive.
 
 Load:
 - DELTA.md (what changed and where)
-- REVIEW_SPECS/chunk-N.md (what to verify)
+- IMPL_SPECS/chunk-N.md (what was specified + Reviewer Notes section at the bottom)
 - Changed code sections (line ranges from DELTA.md only)
-- IMPL_SPECS/chunk-N.md (what was specified, for constraint checking)
 - INTERFACE_REGISTRY.md (for any load-bearing interface that this chunk implements or calls)
 - CONTEXT.md (for SECURITY_AUTO_TRIGGER_PATTERNS in WORKING STYLE section)
 
@@ -46,7 +45,7 @@ registry entry. If drift exists, flag it as a major issue regardless of other fi
 
 ## What to Check
 
-### 1. Success Criteria (from REVIEW_SPECS)
+### 1. Success Criteria (from IMPL_SPECS Reviewer Notes)
 Verify each criterion sentence explicitly. State how you verified it.
 A criterion is only VERIFIED if you can trace it to specific code.
 "Looks like it should work" is not VERIFIED.
@@ -66,7 +65,7 @@ Any violation is an automatic FAIL.
 Review IMPL_SPECS Implementation Constraints. Each violation is a FAIL.
 
 ### 5. Logic and Edge Cases
-From REVIEW_SPECS edge cases section:
+From IMPL_SPECS Reviewer Notes section:
 - Null/undefined inputs
 - Empty collections
 - Boundary values
@@ -101,7 +100,7 @@ the specific concern. Do not block your review — continue reviewing other
 aspects and note that architect review is pending.
 
 ### Escalate to Security Analyst when:
-- Any of REVIEW_SPECS security flags are marked `security_review_required: true`
+- Any of IMPL_SPECS Reviewer Notes security flags are marked `security_review_required: true`
 - The implementation expands security surface beyond what the spec described
 - Credentials, tokens, or sensitive data are handled
 - Authentication or authorization logic is touched

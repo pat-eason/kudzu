@@ -1,5 +1,5 @@
 # SKILL: researcher-pro
-# MODEL: claude-opus-4-6
+# MODEL: claude-sonnet-4-6
 # PHASE: DISCOVER (subagent of project-planner)
 # INPUT: CONCEPT_BRIEF.md + research questions from project-planner
 # OUTPUT: PRO_FINDINGS.md

@@ -1,5 +1,5 @@
 # SKILL: project-manager
-# MODEL: claude-sonnet-4-6
+# MODEL: claude-haiku-4-5
 # PHASE: PLAN (Linear setup) + BUILD (issue updates) + DELIVERY (PR + closure)
 # INPUT: varies by invocation (see modes below)
 # OUTPUT: LINEAR_UPDATE.md + [optional direct Linear API calls if MCP connected]

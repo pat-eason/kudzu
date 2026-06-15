@@ -42,27 +42,18 @@ For each chunk (loop if `all`):
 
 ### Step 0: Load chunk context
 
-Read: CHUNKS.json[chunk-N], IMPL_SPECS/chunk-N.md, REVIEW_SPECS/chunk-N.md,
+Read: CHUNKS.json[chunk-N], IMPL_SPECS/chunk-N.md,
 CONTEXT.md (CURRENT_STATE, OPEN_BUGS, SECURITY_FLAGS),
 INTERFACE_REGISTRY.md, ARCH_DECISIONS.md,
 SECURITY_AUTO_TRIGGER_PATTERNS from config.
 
 Tell user: `⟳ Kudzu — chunk-[N]: [title]`
 
-### Step 1: Session brief
-
-Spawn via Task (Sonnet acceptable here — extraction not design):
-Input: CHUNKS.json chunk-N + IMPL_SPECS/chunk-N.md + CONTEXT.md
-Output: `SESSION_BRIEF.md`
-
-Contents: goal, systems in/out of scope, interfaces, files, success criteria,
-relevant OPEN_BUGS, relevant arch decisions (AD-N references).
-
 ### Step 2: Engineer
 
 Spawn Software Engineer (Sonnet) via Task:
 Instructions: `@kudzu:engineer`
-Input: SESSION_BRIEF.md + files listed in it
+Input: IMPL_SPECS/chunk-N.md + CONTEXT.md (OPEN_BUGS, arch decisions) + files listed in IMPL_SPECS
 Output: code files + `DELTA.md` + optional `BLOCKER.md`
 
 **If BLOCKER.md appears:**
@@ -90,7 +81,7 @@ Set `security_triggered = true` if any match OR chunk has `security_review: true
 
 Spawn Code Reviewer (Sonnet) via Task:
 Instructions: `@kudzu:code-reviewer`
-Input: DELTA.md + REVIEW_SPECS/chunk-N.md + IMPL_SPECS/chunk-N.md +
+Input: DELTA.md + IMPL_SPECS/chunk-N.md (contains Reviewer Notes section) +
        INTERFACE_REGISTRY.md + CONTEXT.md (for patterns)
 Output: `REVIEW.md`
 
@@ -103,7 +94,7 @@ If ARCH_REVIEW.md verdict is REVISE_IMPLEMENTATION: re-run engineer → loop to 
 
 Spawn QA Analyst (Sonnet) via Task:
 Instructions: `@kudzu:qa-analyst`
-Input: DELTA.md + REVIEW_SPECS/chunk-N.md + IMPL_SPECS/chunk-N.md + code
+Input: DELTA.md + IMPL_SPECS/chunk-N.md (contains Reviewer Notes section) + code
 Output: `TEST_REPORT.md` + test files
 
 If TEST_REPORT.md is ENVIRONMENT_BLOCKED:
@@ -115,7 +106,7 @@ Set `needs_human = true`. Continue to Gate 4 check.
 If `security_triggered = true` OR chunk has `load_bearing: true`:
 Spawn Security Analyst (Opus) via Task:
 Instructions: `@kudzu:security-analyst`
-Input: DELTA.md + code + REVIEW_SPECS/chunk-N.md + PRD.md security section
+Input: DELTA.md + code + IMPL_SPECS/chunk-N.md (Reviewer Notes section) + PRD.md security section
 Output: `SECURITY_REVIEW.md`
 
 **If SECURITY_REVIEW.md verdict is NEEDS_ARCHITECT:**
@@ -165,18 +156,17 @@ Write `GATE_4_DECISION_chunk[N].md`. Update CONTEXT.md gate status.
 
 ### Step 8: Documentation
 
-Spawn Documentarian (Sonnet) via Task:
+Spawn Documentarian (Haiku) via Task:
 Instructions: `@kudzu:documentarian`
 Input: DELTA.md + REVIEW.md + PRD.md + existing docs
-(Documentarian internally spawns Technical Writer (Haiku) for writing)
-Output: `DOC_PLAN.md` + updated docs
+Output: updated docs
 
 If NOTION_ENABLED=true in config + Notion MCP connected:
-Technical writer updates Notion pages directly using page IDs from config.
+Documentarian updates Notion pages directly using page IDs from config.
 
 ### Step 9: Linear + PR
 
-Spawn Project Manager (Sonnet) via Task — MODE 2:
+Spawn Project Manager (Haiku) via Task — MODE 2:
 Instructions: `@kudzu:project-manager`
 Input: DELTA.md + REVIEW.md + TEST_REPORT.md + SECURITY_REVIEW.md (if present)
 Output: `LINEAR_UPDATE.md` or direct Linear MCP calls
@@ -213,10 +203,9 @@ If no chunks remain: run project completion (below).
 ## DOC UPDATE MODE (`/kudzu:implement docs`)
 
 1. Read CONTEXT.md + recent DELTA.md files + existing docs
-2. Spawn Documentarian → DOC_PLAN.md
-3. Documentarian spawns Technical Writer → updated docs
-4. Spawn Project Manager MODE 2 (doc-related Linear comments only)
-5. Spawn Checkpoint (CONTEXT.md only — no code state changes)
+2. Spawn Documentarian (Haiku) → updated docs
+3. Spawn Project Manager MODE 2 (doc-related Linear comments only)
+4. Spawn Checkpoint (CONTEXT.md only — no code state changes)
 
 ---
 
@@ -274,18 +263,18 @@ preserves the audit trail even though no human approved.
 ## TICKET SYNC MODE (`/kudzu:implement tickets`)
 
 No code. Read: CONTEXT.md OPEN_BUGS + SECURITY_FLAGS + DEFERRED_NOTES.
-Spawn Project Manager (Sonnet) to create/update Linear issues.
+Spawn Project Manager (Haiku) to create/update Linear issues.
 Report what was synced.
 
 ---
 
 ## PROJECT COMPLETION (all chunks done)
 
-Spawn Architect (Opus) via Task — MODE 3 (Final PRD Review):
+Spawn Architect (Sonnet) via Task — MODE 3 (Final PRD Review):
 Input: PRD.md + CONTEXT.md + all DELTA.md files
 Output: `FINAL_ARCH_REVIEW.md`
 
-Spawn Project Manager (Sonnet) via Task — MODE 4 (Project Completion):
+Spawn Project Manager (Haiku) via Task — MODE 4 (Project Completion):
 Input: CONTEXT.md + CHUNKS.json + PRD.md
 Output: final Linear project update
 

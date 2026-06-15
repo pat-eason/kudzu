@@ -1,5 +1,5 @@
 # SKILL: concept-reviewer
-# MODEL: claude-opus-4-6
+# MODEL: claude-sonnet-4-6
 # PHASE: DISCOVER (post-synthesis) + PLAN (post-architecture)
 # INPUT (mode 1): RESEARCH_SYNTHESIS.md + PRO_FINDINGS.md + CON_FINDINGS.md
 # INPUT (mode 2): CHUNKS.json + IMPL_SPECS/ + PRD.md

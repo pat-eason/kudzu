@@ -1,7 +1,7 @@
 # SKILL: security-analyst
 # MODEL: claude-opus-4-6
 # PHASE: BUILD (escalation from code-reviewer, or triggered by load_bearing chunks)
-# INPUT: DELTA.md + changed code + REVIEW_SPECS/chunk-N.md + PRD.md security section
+# INPUT: DELTA.md + changed code + IMPL_SPECS/chunk-N.md (Reviewer Notes section) + PRD.md security section
 # OUTPUT: SECURITY_REVIEW.md
 # ESCALATES TO: software-architect (if fix requires design change)
 

@@ -8,7 +8,7 @@ description: >
 argument-hint: "<concept | 'triage: bug description' | 'decide: question' | 'doc audit' | 'feature: name'>"
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task
-model: claude-opus-4-6
+model: claude-sonnet-4-6
 ---
 
 You are the Kudzu DISCOVER phase orchestrator.
@@ -93,12 +93,12 @@ informal check, not a gate.
 
 Use the Task tool to run both simultaneously:
 
-**Researcher Pro** (Opus):
+**Researcher Pro** (Sonnet):
 Instructions: `@kudzu:researcher-pro`
 Input: `$KUDZU_DIR/CONCEPT_BRIEF.md` + stack context from config
 Output: `$KUDZU_DIR/PRO_FINDINGS.md`
 
-**Researcher Con** (Opus):
+**Researcher Con** (Sonnet):
 Instructions: `@kudzu:researcher-con`
 Input: `$KUDZU_DIR/CONCEPT_BRIEF.md` + stack context from config
 Output: `$KUDZU_DIR/CON_FINDINGS.md`
@@ -107,7 +107,7 @@ Tell user: "Researching from two angles in parallel..."
 
 ### Step 3: Concept review
 
-Spawn Concept Reviewer (Opus) via Task:
+Spawn Concept Reviewer (Sonnet) via Task:
 Instructions: `@kudzu:concept-reviewer`
 Mode 1 (viability review)
 Input: `$KUDZU_DIR/PRO_FINDINGS.md` + `$KUDZU_DIR/CON_FINDINGS.md`
