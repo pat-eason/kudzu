@@ -19,7 +19,7 @@ tell the user exactly what to fill in.
 ls ~/.claude/kudzu/ 2>/dev/null && echo "kudzu config dir exists" || echo "not found"
 cat ~/.claude/kudzu/config.global.md 2>/dev/null || echo "MISSING"
 cat ~/.claude/kudzu/config.machine.md 2>/dev/null || echo "MISSING"
-cat ./.claude/kudzu/config.project.md 2>/dev/null || echo "MISSING"
+cat ./.kudzu/config.project.md 2>/dev/null || echo "MISSING"
 ```
 
 ## Step 2: Create missing config files
@@ -35,11 +35,11 @@ to `~/.claude/kudzu/config.machine.md`.
 If it EXISTS: do not touch it. Never overwrite machine config.
 Tell the user it already exists and is preserved.
 
-**Project config** (`./.claude/kudzu/config.project.md`):
+**Project config** (`./.kudzu/config.project.md`):
 If missing in current directory: copy from
 `${CLAUDE_SKILL_DIR}/../../config-templates/config.project.md`
-to `./.claude/kudzu/config.project.md`.
-Create directory if needed: `mkdir -p ./.claude/kudzu`
+to `./.kudzu/config.project.md`.
+Create directory if needed: `mkdir -p ./.kudzu`
 
 ## Step 3: Global gitignore
 
@@ -92,7 +92,7 @@ Edit ~/.claude/kudzu/config.global.md
   ENGINEER_LINEAR_ID=      # Your Linear user ID
 
 ### Fill in per project (commit this with the repo):
-Edit .claude/kudzu/config.project.md
+Edit .kudzu/config.project.md
   PROJECT_NAME=            # e.g. "Kenai"
   GITHUB_REPO=             # e.g. "luxury-presence/kenai"
   LINEAR_TEAM_ID=          # Override if different from machine default
@@ -101,7 +101,7 @@ Edit .claude/kudzu/config.project.md
   PROJECT_AUTH=            # spicedb | jwt | none
 
 ## Commit the project config:
-  git add .claude/kudzu/config.project.md
+  git add .kudzu/config.project.md
   git commit -m "chore: add Kudzu project config"
 
 ## Ready to use:

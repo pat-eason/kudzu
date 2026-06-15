@@ -1,6 +1,6 @@
 # config.project.md
 # Denworks SDLC Plugin — Project Configuration
-# Location: [project-root]/.claude/denworks/config.project.md
+# Location: [project-root]/.kudzu/config.project.md
 #
 # Commit this file with your project. It contains no secrets.
 # Values here override global and machine config.

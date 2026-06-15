@@ -24,7 +24,7 @@ Kudzu uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `/kudzu:config` — Three-layer config loader (global / machine / project).
 - `/kudzu:setup` — First-run setup wizard. Creates config files, gitignore entries.
 - Three-layer config system: `~/.claude/kudzu/config.global.md` (identity),
-  `~/.claude/kudzu/config.machine.md` (credentials), `.claude/kudzu/config.project.md` (project).
+  `~/.claude/kudzu/config.machine.md` (credentials), `.kudzu/config.project.md` (project).
 - Full framework of 13 specialist agent skills (planning, implementation, review, delivery).
 - HITL gate system with 4 defined gates and structured decision files.
 - INTERFACE_REGISTRY.md for cross-chunk interface drift detection.

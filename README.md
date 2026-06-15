@@ -93,7 +93,7 @@ GITHUB_REVIEWERS=        # ntsianos,teammate (on work machine)
 NOTION_ENABLED=false
 ```
 
-### `.claude/kudzu/config.project.md` — Per-project config
+### `.kudzu/config.project.md` — Per-project config
 Committed with the repo. No secrets. Auto-picked up by teammates.
 
 ```
@@ -146,8 +146,8 @@ For each LP project, add project config once:
 cd /path/to/lp-project
 # Create project config (if not already committed):
 cp ~/.claude/kudzu/  # kudzu:setup handles this
-nano .claude/kudzu/config.project.md
-git add .claude/kudzu/config.project.md
+nano .kudzu/config.project.md
+git add .kudzu/config.project.md
 git commit -m "chore: add Kudzu project config"
 ```
 
@@ -162,7 +162,7 @@ when they clone the repo.
 |------|-------|-----------|
 | `~/.claude/kudzu/config.global.md` | Personal dotfiles | ✓ Yes |
 | `~/.claude/kudzu/config.machine.md` | Local only | ✗ Never |
-| `.claude/kudzu/config.project.md` | Project repo | ✓ Yes |
+| `.kudzu/config.project.md` | Project repo | ✓ Yes |
 | `PRD.md`, `ARCH_DECISIONS.md` | Project repo | Recommended |
 | `IMPL_SPECS/`, `REVIEW_SPECS/` | Project repo | Recommended |
 | `CONTEXT.md` | Project repo | Your call |

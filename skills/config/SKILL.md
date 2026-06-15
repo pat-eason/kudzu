@@ -26,7 +26,7 @@ Layer 2 — MACHINE (local secrets + context, never committed):
   ~/.claude/kudzu/config.machine.md
 
 Layer 3 — PROJECT (per-project overrides, committed with repo):
-  [cwd]/.claude/kudzu/config.project.md
+  [cwd]/.kudzu/config.project.md
 ```
 
 ## Merge rules
@@ -80,4 +80,4 @@ not as a hard stop.
 
 Missing key messaging format:
 "⚠ Kudzu: Missing [KEY] — add it to ~/.claude/kudzu/config.machine.md
-or [project]/.claude/kudzu/config.project.md"
+or [project]/.kudzu/config.project.md"
