@@ -49,6 +49,7 @@ That's it. `/kudzu:setup` walks you through creating the three config files.
 | *(empty)* | Run next pending chunk |
 | `chunk-N` | Run specific chunk |
 | `all` | Run all remaining chunks automatically |
+| `auto` | Run all chunks, no Gate 4 pauses — auto-resolves defensively |
 | `docs` | Documentation-only pass |
 | `bug: [description]` | Bug fix mode |
 | `tickets` | Sync open issues to Linear |

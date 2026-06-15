@@ -116,19 +116,21 @@ Present:
 ## Plan Ready — Kudzu Gate 3
 
 [N] chunks across [M] systems
+Each chunk becomes one Linear issue on approval.
 
-Chunk order:
-  chunk-1: [title] (~[N] lines, [systems])
-  chunk-2: [title] (~[N] lines, [systems], depends on: 1)
-  ... [up to 8, then "and N more"]
+Chunks → Linear issues:
+  chunk-1  "[title]"  ~[N] lines  [systems]
+  chunk-2  "[title]"  ~[N] lines  [systems]  depends on: chunk-1
+  chunk-3  "[title]"  ~[N] lines  [systems]
+  ... [up to 8, then "and N more — see CHUNKS.json"]
 
 Load-bearing (always security reviewed):
-  [list chunks with load_bearing: true]
+  [list load_bearing chunk ids and titles, or "none"]
 
 Decomposition review: [APPROVED|NEEDS_REVISION] — [summary]
 
 Open PRD questions affecting implementation:
-  • [any OQs that blocked the architect]
+  • [any OQs that blocked the architect, or "none"]
 
 Approve, revise chunks, or go back to revise the PRD?
   [A] Approved — set up Linear, ready to implement
@@ -171,11 +173,16 @@ If not: write `$KUDZU_DIR/LINEAR_UPDATE.md` for manual paste.
 ## Plan Complete — Kudzu ✓
 
 [N] chunks ready.
-[Linear: project created with N issues | LINEAR_UPDATE.md written for manual paste]
 
-chunk-1: [title]
+Linear issues [created | queued in LINEAR_UPDATE.md]:
+  chunk-1  →  "[title]"  [#issue-id if MCP created it | "paste LINEAR_UPDATE.md"]
+  chunk-2  →  "[title]"  [#issue-id if MCP created it | "paste LINEAR_UPDATE.md"]
+  ... [all chunks]
+
+Next: chunk-1 — [title]
 Goal: [success criteria from CHUNKS.json]
 Systems: [systems]
 
 Run `/kudzu:implement` to start, or `/kudzu:implement chunk-[N]` for a specific chunk.
+Run `/kudzu:implement auto` to run all chunks without review gates.
 ```

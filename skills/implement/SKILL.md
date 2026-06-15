@@ -5,7 +5,7 @@ description: >
   → documentation → Linear update → checkpoint → git commit.
   Loops through chunks with HITL only at Gate 4 when a chunk actually needs
   your judgment. Also handles doc updates, bug fixes, and ticket syncing.
-argument-hint: "[chunk-N | all | docs | 'bug: description' | tickets | next | empty for next chunk]"
+argument-hint: "[chunk-N | all | auto | docs | 'bug: description' | tickets | next | empty for next chunk]"
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task
 model: claude-sonnet-4-6
@@ -29,6 +29,7 @@ You spawn specialist subagents and coordinate their outputs.
 | empty or `next` | Use CONTEXT.md NEXT_SESSION chunk id |
 | `chunk-N` | Implement specific chunk |
 | `all` | Implement all remaining chunks in order |
+| `auto` | Implement all remaining chunks, no Gate 4 pauses — see AUTO MODE below |
 | `docs` | Documentation-only pass |
 | `bug: [description]` | Bug fix mode |
 | `tickets` | Sync open issues to Linear |
@@ -230,6 +231,43 @@ If no chunks remain: run project completion (below).
 7. Standard delivery: docs, Linear, checkpoint, commit
 
 Write `BUGFIX_[short-description].md` as the session artifact.
+
+---
+
+## AUTO MODE (`/kudzu:implement auto`)
+
+Runs all remaining chunks in order, identical pipeline to `all`, but Gate 4
+never pauses for human input. Instead, each trigger is resolved automatically
+using the most defensive available option.
+
+**Auto-resolution policy:**
+
+| Trigger | Auto action |
+|---------|-------------|
+| REVIEW FAIL | FIX_AND_RETRY — apply reviewer feedback, re-run Steps 4–6. Max 2 retries per chunk. |
+| REVIEW PASS_WITH_NOTES | APPROVED_WITH_NOTES — create follow-up Linear issues, continue. |
+| SECURITY FAIL / NEEDS_ARCHITECT | Spawn Architect MODE 4, apply resolution, re-run engineer. Counts as a retry. |
+| QA INSUFFICIENT | Log gap as a follow-up Linear issue, continue. |
+| QA ENVIRONMENT_BLOCKED | Log in CONTEXT.md OPEN_BUGS, continue — cannot fix environment automatically. |
+| chunk 1 gate (normally always reviewed) | Skip gate, continue. |
+| load_bearing gate | Skip gate, continue. |
+| BLOCKER.md `re_entry_point: human` | **STOP** — surface to user. This is the only case that halts auto mode. |
+
+**Retry limit:** If a chunk fails FIX_AND_RETRY twice and still does not pass
+review, auto mode stops and reports:
+```
+⚠ Auto mode halted — chunk-[N]: [title]
+  Review failed after 2 retries. Manual intervention required.
+  Run `/kudzu:implement chunk-[N]` to retry with Gate 4 enabled.
+```
+
+**Progress reporting:** After each chunk completes, print the standard Step 11
+summary line. Do not suppress output — auto mode is unattended but must leave
+a readable trail.
+
+**Gate 4 decision files:** Write `GATE_4_DECISION_chunk[N].md` for every chunk
+where Gate 4 would have triggered, recording the auto-resolution taken. This
+preserves the audit trail even though no human approved.
 
 ---
 
