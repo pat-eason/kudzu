@@ -1,0 +1,26 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "kudzu",
+  "version": "1.0.0",
+  "description": "Kudzu — an agentic SDLC framework for Claude Code. Three commands cover the full cycle: /research, /plan, /implement. Everything else runs automatically with HITL gates where your judgment actually matters.",
+  "author": {
+    "name": "Pat (Denworks)",
+    "email": "pat@denworks.io"
+  },
+  "homepage": "https://github.com/denworks/kudzu",
+  "repository": "https://github.com/denworks/kudzu",
+  "license": "MIT",
+  "keywords": [
+    "sdlc",
+    "agentic",
+    "research",
+    "planning",
+    "implementation",
+    "linear",
+    "github",
+    "notion",
+    "workflow",
+    "appalachian"
+  ],
+  "category": "productivity"
+}

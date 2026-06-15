@@ -1,0 +1,44 @@
+# ── Machine config (secrets — never commit) ───────────────────────────
+.claude/kudzu/config.machine.md
+
+# ── Project-generated runtime files ───────────────────────────────────
+# These are created by Kudzu during use and belong in the consuming
+# project's repo (or .gitignore), not in the Kudzu plugin repo.
+
+CONTEXT.md
+CONTEXT_ARCHIVE.md
+PRD.md
+ARCH_DECISIONS.md
+CHUNKS.json
+INTERFACE_REGISTRY.md
+SESSION_BRIEF.md
+DELTA.md
+REVIEW.md
+ARCH_REVIEW.md
+BLOCKER.md
+BLOCKER_RESOLUTION.md
+SECURITY_REVIEW.md
+TEST_REPORT.md
+DOC_PLAN.md
+DOC_AUDIT.md
+RESEARCH_SYNTHESIS.md
+VIABILITY_REPORT.md
+PRO_FINDINGS.md
+CON_FINDINGS.md
+CONCEPT_BRIEF.md
+DECOMP_REVIEW.md
+TRIAGE_REPORT.md
+FEATURE_BRIEF.md
+FINAL_ARCH_REVIEW.md
+GATE_PENDING.md
+GATE_*_DECISION.md
+GATE_4_DECISION_chunk*.md
+LINEAR_UPDATE.md
+PR_DESCRIPTION.md
+IMPL_SPECS/
+REVIEW_SPECS/
+
+# ── OS / tooling ──────────────────────────────────────────────────────
+.DS_Store
+*.log
+node_modules/

@@ -1,0 +1,154 @@
+name: Validate Plugin
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate Kudzu plugin manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate JSON — plugin.json
+        run: |
+          echo "Validating .claude-plugin/plugin.json..."
+          python3 -c "
+          import json, sys
+          with open('.claude-plugin/plugin.json') as f:
+              data = json.load(f)
+          required = ['name', 'version', 'description']
+          missing = [k for k in required if k not in data]
+          if missing:
+              print(f'FAIL: Missing required fields: {missing}')
+              sys.exit(1)
+          print(f'OK: plugin.json valid — {data[\"name\"]} v{data[\"version\"]}')
+          "
+
+      - name: Validate JSON — marketplace.json
+        run: |
+          echo "Validating .claude-plugin/marketplace.json..."
+          python3 -c "
+          import json, sys
+          with open('.claude-plugin/marketplace.json') as f:
+              data = json.load(f)
+          required = ['name', 'owner', 'plugins']
+          missing = [k for k in required if k not in data]
+          if missing:
+              print(f'FAIL: Missing required fields: {missing}')
+              sys.exit(1)
+          if not data['plugins']:
+              print('FAIL: plugins array is empty')
+              sys.exit(1)
+          print(f'OK: marketplace.json valid — {len(data[\"plugins\"])} plugin(s)')
+          "
+
+      - name: Check SKILL.md files exist
+        run: |
+          echo "Checking skill files..."
+          skills=(research plan implement status checkpoint gate config setup)
+          missing=()
+          for skill in \"\${skills[@]}\"; do
+            if [ ! -f \"skills/$skill/SKILL.md\" ]; then
+              missing+=(\"$skill\")
+            fi
+          done
+          if [ \${#missing[@]} -gt 0 ]; then
+            echo \"FAIL: Missing SKILL.md files: \${missing[*]}\"
+            exit 1
+          fi
+          echo \"OK: All \${#skills[@]} skill SKILL.md files present\"
+
+      - name: Check framework files exist
+        run: |
+          echo "Checking framework files..."
+          files=(
+            framework/skills/planning/project-planner.md
+            framework/skills/planning/researcher-pro.md
+            framework/skills/planning/researcher-con.md
+            framework/skills/planning/concept-reviewer.md
+            framework/skills/planning/project-manager.md
+            framework/skills/implementation/architect.md
+            framework/skills/implementation/engineer.md
+            framework/skills/review/code-reviewer.md
+            framework/skills/review/qa-analyst.md
+            framework/skills/review/security-analyst.md
+            framework/skills/delivery/documentarian.md
+            framework/skills/delivery/technical-writer.md
+            framework/skills/delivery/checkpoint.md
+            framework/file-contracts/PRD.schema.md
+            framework/hitl/gates.md
+            framework/templates/CONTEXT.md
+            framework/templates/INTERFACE_REGISTRY.md
+          )
+          missing=()
+          for f in \"\${files[@]}\"; do
+            [ ! -f \"$f\" ] && missing+=(\"$f\")
+          done
+          if [ \${#missing[@]} -gt 0 ]; then
+            echo \"FAIL: Missing framework files:\"
+            printf '  %s\n' \"\${missing[@]}\"
+            exit 1
+          fi
+          echo \"OK: All \${#files[@]} framework files present\"
+
+      - name: Check config templates exist
+        run: |
+          echo "Checking config templates..."
+          for f in config-templates/config.global.md \
+                   config-templates/config.machine.md \
+                   config-templates/config.project.md; do
+            if [ ! -f \"$f\" ]; then
+              echo \"FAIL: Missing $f\"
+              exit 1
+            fi
+          done
+          echo "OK: All config templates present"
+
+      - name: Check version consistency
+        run: |
+          echo "Checking version consistency..."
+          PLUGIN_VER=$(python3 -c "import json; print(json.load(open('.claude-plugin/plugin.json'))['version'])")
+          MARKET_VER=$(python3 -c "import json; print(json.load(open('.claude-plugin/marketplace.json'))['plugins'][0].get('version', 'MISSING'))")
+          echo "  plugin.json: $PLUGIN_VER"
+          echo "  marketplace.json: $MARKET_VER"
+          if [ "$PLUGIN_VER" != "$MARKET_VER" ]; then
+            echo "FAIL: Version mismatch between plugin.json and marketplace.json"
+            exit 1
+          fi
+          echo "OK: Versions match ($PLUGIN_VER)"
+
+      - name: Check SKILL.md frontmatter
+        run: |
+          echo "Checking SKILL.md frontmatter..."
+          python3 << 'PYEOF'
+          import os, sys
+          errors = []
+          for skill in ['research', 'plan', 'implement', 'status', 'checkpoint', 'gate', 'config', 'setup']:
+              path = f'skills/{skill}/SKILL.md'
+              with open(path) as f:
+                  content = f.read()
+              if not content.startswith('---'):
+                  errors.append(f'{path}: missing frontmatter')
+                  continue
+              end = content.index('---', 3)
+              frontmatter = content[3:end]
+              if 'name:' not in frontmatter:
+                  errors.append(f'{path}: missing name field')
+              if 'description:' not in frontmatter:
+                  errors.append(f'{path}: missing description field')
+          if errors:
+              print('FAIL:')
+              for e in errors:
+                  print(f'  {e}')
+              sys.exit(1)
+          print(f'OK: All SKILL.md files have valid frontmatter')
+          PYEOF
+
+      - name: All checks passed
+        run: echo "✓ Kudzu plugin validation complete"
