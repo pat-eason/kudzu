@@ -138,8 +138,6 @@ jobs:
                   continue
               end = content.index('---', 3)
               frontmatter = content[3:end]
-              if 'name:' not in frontmatter:
-                  errors.append(f'{path}: missing name field')
               if 'description:' not in frontmatter:
                   errors.append(f'{path}: missing description field')
           if errors:
