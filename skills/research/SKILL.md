@@ -40,6 +40,39 @@ Detect mode automatically:
 
 If $ARGUMENTS is empty: "What are you researching or trying to figure out?"
 
+## Working directory
+
+After detecting intent, determine `KUDZU_DIR` before writing any file.
+
+**Step 1 — Derive type from mode:**
+
+| Mode | Type slug |
+|------|-----------|
+| Full DISCOVER phase | `greenfield` |
+| Bug triage | `triage` |
+| Decision research | `decision` |
+| Doc audit | `doc-audit` |
+| Feature scoping | `feature` |
+
+**Step 2 — Derive topic slug from $ARGUMENTS:**
+- Strip mode prefixes (`triage:`, `decide:`, `feature:`)
+- Lowercase; replace spaces and non-alphanumeric characters with hyphens
+- Collapse consecutive hyphens; strip leading/trailing hyphens
+- Truncate to 40 characters
+- If $ARGUMENTS is empty or yields an empty slug: use `untitled-<YYYY-MM-DD>`
+- Examples:
+  - `"triage: login fails after OAuth redirect"` → `login-fails-after-oauth-redirect`
+  - `"decide: should we use Kafka or SQS?"` → `should-we-use-kafka-or-sqs`
+  - `"feature: user notifications"` → `user-notifications`
+
+**Step 3 — Set and create the directory:**
+```
+KUDZU_DIR = ".kudzu/<type>/<topic-slug>"
+mkdir -p $KUDZU_DIR
+```
+
+All file writes in this skill use `$KUDZU_DIR/<FILENAME>` unless stated otherwise.
+
 ---
 
 ## FULL DISCOVER PHASE
@@ -53,7 +86,7 @@ Before spawning researchers, verify:
 - Success definition
 
 If $ARGUMENTS already answers these, skip clarification.
-Write `CONCEPT_BRIEF.md`. Show it. Wait for confirmation — this is a fast
+Write `$KUDZU_DIR/CONCEPT_BRIEF.md`. Show it. Wait for confirmation — this is a fast
 informal check, not a gate.
 
 ### Step 2: Spawn researchers in parallel
@@ -62,13 +95,13 @@ Use the Task tool to run both simultaneously:
 
 **Researcher Pro** (Opus):
 Instructions: `@kudzu:researcher-pro`
-Input: CONCEPT_BRIEF.md + stack context from config
-Output: `PRO_FINDINGS.md`
+Input: `$KUDZU_DIR/CONCEPT_BRIEF.md` + stack context from config
+Output: `$KUDZU_DIR/PRO_FINDINGS.md`
 
 **Researcher Con** (Opus):
 Instructions: `@kudzu:researcher-con`
-Input: CONCEPT_BRIEF.md + stack context from config
-Output: `CON_FINDINGS.md`
+Input: `$KUDZU_DIR/CONCEPT_BRIEF.md` + stack context from config
+Output: `$KUDZU_DIR/CON_FINDINGS.md`
 
 Tell user: "Researching from two angles in parallel..."
 
@@ -77,14 +110,14 @@ Tell user: "Researching from two angles in parallel..."
 Spawn Concept Reviewer (Opus) via Task:
 Instructions: `@kudzu:concept-reviewer`
 Mode 1 (viability review)
-Input: PRO_FINDINGS.md + CON_FINDINGS.md
-Output: `VIABILITY_REPORT.md`
+Input: `$KUDZU_DIR/PRO_FINDINGS.md` + `$KUDZU_DIR/CON_FINDINGS.md`
+Output: `$KUDZU_DIR/VIABILITY_REPORT.md`
 
 ### Step 4: Synthesize
 
 Follow synthesis protocol from project-planner.md Step 3.
 Conflict rule: >1 viability tier disagreement = CONTESTED_FINDING for human.
-Write `RESEARCH_SYNTHESIS.md`.
+Write `$KUDZU_DIR/RESEARCH_SYNTHESIS.md`.
 
 ### Step 5: Gate 1
 
@@ -114,8 +147,8 @@ What next?
   [D] Research only — stop here
 ```
 
-Write `GATE_1_DECISION.md` based on response.
-Update CONTEXT.md GATE_STATUS: Gate 1 APPROVED/PENDING.
+Write `$KUDZU_DIR/GATE_1_DECISION.md` based on response.
+Update `$KUDZU_DIR/CONTEXT.md` GATE_STATUS: Gate 1 APPROVED/PENDING.
 
 ### Step 6: Write PRD (if A)
 
@@ -134,7 +167,7 @@ Open questions I couldn't resolve:
 Approve this or tell me what to revise.
 ```
 
-Write `GATE_2_DECISION.md`. Update CONTEXT.md Gate 2 status.
+Write `$KUDZU_DIR/GATE_2_DECISION.md`. Update `$KUDZU_DIR/CONTEXT.md` Gate 2 status.
 
 ---
 
@@ -170,14 +203,14 @@ Next step:
   [C] I'll investigate manually
 ```
 
-Write `TRIAGE_REPORT.md`. No gate — triage is informational.
+Write `$KUDZU_DIR/TRIAGE_REPORT.md`. No gate — triage is informational.
 
 ---
 
 ## DECISION RESEARCH MODE
 
 Spawn both researchers on the decision question. No PRD.
-Output: `RESEARCH_SYNTHESIS.md` with clear recommendation.
+Output: `$KUDZU_DIR/RESEARCH_SYNTHESIS.md` with clear recommendation.
 Present: recommendation + confidence + top 3 tradeoffs.
 Ask: "Want to plan something based on this, or was this the output?"
 
@@ -185,28 +218,28 @@ Ask: "Want to plan something based on this, or was this the output?"
 
 ## DOC AUDIT MODE
 
-Read: CONTEXT.md, recent DELTA.md files, existing README, Notion page IDs from config.
+Read: `$KUDZU_DIR/CONTEXT.md`, recent DELTA.md files, existing README, Notion page IDs from config.
 Identify: stale docs, missing docs for new behavior, Linear issues needing updates.
-Write `DOC_AUDIT.md`.
+Write `$KUDZU_DIR/DOC_AUDIT.md`.
 Ask: "Want me to run `/kudzu:implement docs` to make these changes?"
 
 ---
 
 ## FEATURE SCOPING MODE
 
-If ARCH_DECISIONS.md exists: read it first.
+If `$KUDZU_DIR/ARCH_DECISIONS.md` exists: read it first.
 Research only the delta — what new decisions does this feature require?
-Write `FEATURE_BRIEF.md` (mini-PRD).
+Write `$KUDZU_DIR/FEATURE_BRIEF.md` (mini-PRD).
 Ask: "Ready to `/kudzu:plan` this feature?"
 
 ---
 
 ## After any mode
 
-Update CONTEXT.md: PHASE, GATE_STATUS, NEXT_SESSION.
+Update `$KUDZU_DIR/CONTEXT.md`: PHASE, GATE_STATUS, NEXT_SESSION.
 Surface any missing config keys at the bottom of the response.
 
 Tell user what to run next:
 - PRD approved → "Run `/kudzu:plan` to decompose into implementation chunks"
-- Research only → "Saved to RESEARCH_SYNTHESIS.md"
-- Bug triage → "Saved to TRIAGE_REPORT.md. Run `/kudzu:implement bug: [description]` to fix."
+- Research only → "Saved to `$KUDZU_DIR/RESEARCH_SYNTHESIS.md`"
+- Bug triage → "Saved to `$KUDZU_DIR/TRIAGE_REPORT.md`. Run `/kudzu:implement bug: [description]` to fix."

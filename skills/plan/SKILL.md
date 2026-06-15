@@ -4,7 +4,7 @@ description: >
   and produces a full implementation plan: architecture decisions, dependency-
   ordered chunks, dual implementation+review specs per chunk, and Linear
   project setup. Pauses at Gate 3 for your approval before any code is written.
-argument-hint: "[optional: path to PRD file, Linear issue URL, or leave empty to use existing PRD.md]"
+argument-hint: "[optional: path to a .kudzu/ use-case directory, PRD file, Linear issue URL, or leave empty to auto-detect]"
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task
 model: claude-opus-4-6
@@ -17,22 +17,52 @@ chunk by chunk with full context in each session.
 ## Session start
 
 **1. Load config:** Run `kudzu:config`. Store resolved config.
-**2. Check state:** Read CONTEXT.md. Check GATE_STATUS.
+**2. Resolve working directory:** See "Working directory" section below.
 **3. Load framework:** `@kudzu:architect`
+
+## Working directory
+
+Determine `KUDZU_DIR` before reading any state or writing any file.
+
+**Resolution order:**
+
+1. **$ARGUMENTS is a `.kudzu/` path** → use it directly as `KUDZU_DIR`.
+
+2. **$ARGUMENTS is a file path to a PRD** → set `KUDZU_DIR` to the directory
+   containing that file. Ask: "Is this approved? (y/n)" — if yes, write
+   `$KUDZU_DIR/GATE_2_DECISION.md` APPROVED and continue.
+
+3. **$ARGUMENTS is a Linear URL** → fetch the issue (if Linear MCP connected),
+   derive a topic slug from the issue title, prompt user for the use-case type
+   (feature / greenfield / triage), set
+   `KUDZU_DIR = ".kudzu/<type>/<topic-slug>"`, create it, and use the issue
+   as the planning brief.
+
+4. **$ARGUMENTS is empty** → search for CONTEXT.md files under `.kudzu/` that
+   contain `Gate 2.*APPROVED`:
+   ```bash
+   grep -rl "Gate 2.*APPROVED" .kudzu/ --include="CONTEXT.md" 2>/dev/null
+   ```
+   - One match → use its containing directory as `KUDZU_DIR`.
+   - Multiple matches → list them and ask: "Which use-case should I plan?"
+   - No match → "No approved Gate 2 found under `.kudzu/`. Run
+     `/kudzu:research` first, or pass a PRD path as an argument."
+
+All file writes use `$KUDZU_DIR/<FILENAME>` unless stated otherwise.
+`IMPL_SPECS/` and `REVIEW_SPECS/` subdirectories live inside `$KUDZU_DIR`.
 
 ## Gate check
 
-Read CONTEXT.md GATE_STATUS. If Gate 2 is not APPROVED:
-- PRD.md exists but no gate decision → show PRD summary, ask: "Is this approved? (y/n)"
-  Yes → write GATE_2_DECISION.md APPROVED, continue.
+Read `$KUDZU_DIR/CONTEXT.md` GATE_STATUS. If Gate 2 is not APPROVED:
+- `$KUDZU_DIR/PRD.md` exists but no gate decision → show PRD summary, ask:
+  "Is this approved? (y/n)"
+  Yes → write `$KUDZU_DIR/GATE_2_DECISION.md` APPROVED, continue.
   No → "Run `/kudzu:research` to create a PRD first."
 - No PRD.md and $ARGUMENTS empty → "No PRD found. Run `/kudzu:research` first."
-- $ARGUMENTS is a file path → read it as PRD, ask for confirmation.
-- $ARGUMENTS is a Linear URL → fetch issue (if Linear MCP connected), use as brief.
 
 ## Step 1: Validate PRD
 
-Validate PRD.md against:
+Validate `$KUDZU_DIR/PRD.md` against:
 `${CLAUDE_SKILL_DIR}/../../framework/file-contracts/PRD.schema.md`
 
 Run the architect's validation checklist:
@@ -50,15 +80,17 @@ If validation fails: list failing fields, stop, ask user to fix PRD.
 Spawn Software Architect subagent (Opus) via Task:
 Instructions: `@kudzu:architect`
 Mode 1 (Decomposition)
-Input: PRD.md + GATE_2_DECISION.md + stack context from config
-Output: `ARCH_DECISIONS.md` (numbered AD-N, LBI-N format)
+Input: `$KUDZU_DIR/PRD.md` + `$KUDZU_DIR/GATE_2_DECISION.md` + stack context from config
+Output: `$KUDZU_DIR/ARCH_DECISIONS.md` (numbered AD-N, LBI-N format)
 
 ARCH_DECISIONS.md must use structured Tech Stack format and number every decision.
 
 ## Step 3: Chunk decomposition
 
 Same architect subagent continues:
-Output: `CHUNKS.json` + `IMPL_SPECS/chunk-N.md` + `REVIEW_SPECS/chunk-N.md`
+Output: `$KUDZU_DIR/CHUNKS.json`
+       + `$KUDZU_DIR/IMPL_SPECS/chunk-N.md`
+       + `$KUDZU_DIR/REVIEW_SPECS/chunk-N.md`
 
 Each IMPL_SPECS must include:
 - "Relevant Arch Decisions" section with AD-N/LBI-N references
@@ -74,8 +106,8 @@ Each REVIEW_SPECS must include:
 Spawn Concept Reviewer subagent (Opus) via Task:
 Instructions: `@kudzu:concept-reviewer`
 Mode 2 (Decomposition review)
-Input: CHUNKS.json + IMPL_SPECS/ + PRD.md
-Output: `DECOMP_REVIEW.md`
+Input: `$KUDZU_DIR/CHUNKS.json` + `$KUDZU_DIR/IMPL_SPECS/` + `$KUDZU_DIR/PRD.md`
+Output: `$KUDZU_DIR/DECOMP_REVIEW.md`
 
 ## Step 5: Gate 3
 
@@ -104,18 +136,18 @@ Approve, revise chunks, or go back to revise the PRD?
   [C] Revise PRD first: [tell me what's wrong]
 ```
 
-Write `GATE_3_DECISION.md`. Update CONTEXT.md Gate 3 status.
+Write `$KUDZU_DIR/GATE_3_DECISION.md`. Update `$KUDZU_DIR/CONTEXT.md` Gate 3 status.
 
 If REVISE_CHUNKS: re-run Steps 2-4 with feedback.
-If REVISE_PRD: update PRD.md, re-run from Step 1.
+If REVISE_PRD: update `$KUDZU_DIR/PRD.md`, re-run from Step 1.
 
 ## Step 6: Initialize project state
 
-Create `INTERFACE_REGISTRY.md` from:
+Create `$KUDZU_DIR/INTERFACE_REGISTRY.md` from:
 `${CLAUDE_SKILL_DIR}/../../framework/templates/INTERFACE_REGISTRY.md`
-Populate with all LBI-N entries from ARCH_DECISIONS.md (Status: PENDING).
+Populate with all LBI-N entries from `$KUDZU_DIR/ARCH_DECISIONS.md` (Status: PENDING).
 
-Update CONTEXT.md:
+Update `$KUDZU_DIR/CONTEXT.md`:
 - PHASE: BUILD
 - GATE_STATUS: Gate 3 APPROVED
 - PRD_SUMMARY: one paragraph (immutable from here)
@@ -127,11 +159,11 @@ Update CONTEXT.md:
 Spawn Project Manager subagent (Sonnet) via Task:
 Instructions: `@kudzu:project-manager`
 Mode 1 (Project setup)
-Input: GATE_3_DECISION.md + CHUNKS.json + PRD.md
+Input: `$KUDZU_DIR/GATE_3_DECISION.md` + `$KUDZU_DIR/CHUNKS.json` + `$KUDZU_DIR/PRD.md`
 
 If LINEAR_TEAM_ID present in config + Linear MCP connected:
 → Create project + parent issues directly
-If not: write `LINEAR_UPDATE.md` for manual paste.
+If not: write `$KUDZU_DIR/LINEAR_UPDATE.md` for manual paste.
 
 ## Step 8: Tell user what's next
 
