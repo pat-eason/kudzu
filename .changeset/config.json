@@ -1,0 +1,6 @@
+{
+  "changelog": "CHANGELOG.md",
+  "commit": false,
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch"
+}

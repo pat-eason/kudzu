@@ -38,6 +38,9 @@ PR_DESCRIPTION.md
 IMPL_SPECS/
 REVIEW_SPECS/
 
+# ── Changeset tooling ─────────────────────────────────────────────────
+.changeset-result.json
+
 # ── OS / tooling ──────────────────────────────────────────────────────
 .DS_Store
 *.log

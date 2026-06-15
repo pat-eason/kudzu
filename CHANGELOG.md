@@ -6,6 +6,21 @@ Kudzu uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.0] — 2026-06-15
+
+### Changed
+- Per-project config moved from `.claude/kudzu/config.project.md` to `.kudzu/config.project.md`.
+  Run `/kudzu:setup` to migrate, or move the file manually.
+- Kudzu runtime artifacts (CONTEXT.md, PRD.md, CHUNKS.json, etc.) now stored under
+  `.kudzu/<type>/<topic>/` instead of the project root, keeping the workspace clean.
+
+### Fixed
+- CI validation workflow now uses correct shell quoting — all steps previously passed
+  by accident due to broken `\${#array[@]}` expansion; config-templates check was the
+  only one that visibly failed.
+
+---
+
 ## [1.0.0] — 2026-06-14
 
 ### Added

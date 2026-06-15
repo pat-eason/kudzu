@@ -53,16 +53,16 @@ jobs:
           echo "Checking skill files..."
           skills=(research plan implement status checkpoint gate config setup)
           missing=()
-          for skill in \"\${skills[@]}\"; do
-            if [ ! -f \"skills/$skill/SKILL.md\" ]; then
-              missing+=(\"$skill\")
+          for skill in "${skills[@]}"; do
+            if [ ! -f "skills/$skill/SKILL.md" ]; then
+              missing+=("$skill")
             fi
           done
-          if [ \${#missing[@]} -gt 0 ]; then
-            echo \"FAIL: Missing SKILL.md files: \${missing[*]}\"
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "FAIL: Missing SKILL.md files: ${missing[*]}"
             exit 1
           fi
-          echo \"OK: All \${#skills[@]} skill SKILL.md files present\"
+          echo "OK: All ${#skills[@]} skill SKILL.md files present"
 
       - name: Check framework files exist
         run: |
@@ -87,15 +87,15 @@ jobs:
             framework/templates/INTERFACE_REGISTRY.md
           )
           missing=()
-          for f in \"\${files[@]}\"; do
-            [ ! -f \"$f\" ] && missing+=(\"$f\")
+          for f in "${files[@]}"; do
+            [ ! -f "$f" ] && missing+=("$f")
           done
-          if [ \${#missing[@]} -gt 0 ]; then
-            echo \"FAIL: Missing framework files:\"
-            printf '  %s\n' \"\${missing[@]}\"
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "FAIL: Missing framework files:"
+            printf '  %s\n' "${missing[@]}"
             exit 1
           fi
-          echo \"OK: All \${#files[@]} framework files present\"
+          echo "OK: All ${#files[@]} framework files present"
 
       - name: Check config templates exist
         run: |
@@ -103,8 +103,8 @@ jobs:
           for f in config-templates/config.global.md \
                    config-templates/config.machine.md \
                    config-templates/config.project.md; do
-            if [ ! -f \"$f\" ]; then
-              echo \"FAIL: Missing $f\"
+            if [ ! -f "$f" ]; then
+              echo "FAIL: Missing $f"
               exit 1
             fi
           done

@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Create Release PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for pending changesets
+        id: changesets
+        run: |
+          count=$(ls .changeset/*.md 2>/dev/null | grep -v -E '(README|config)\.md' | wc -l | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
+      - name: Apply changesets and bump version
+        if: steps.changesets.outputs.count != '0'
+        id: bump
+        run: |
+          python3 scripts/apply-changesets.py
+          new=$(python3 -c "import json; print(json.load(open('.changeset-result.json'))['new_version'])")
+          old=$(python3 -c "import json; print(json.load(open('.changeset-result.json'))['old_version'])")
+          echo "new_version=$new" >> "$GITHUB_OUTPUT"
+          echo "old_version=$old" >> "$GITHUB_OUTPUT"
+          rm -f .changeset-result.json
+
+      - name: Open Version Packages PR
+        if: steps.changesets.outputs.count != '0'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: changeset-release/main
+          delete-branch: true
+          title: "chore: release v${{ steps.bump.outputs.new_version }}"
+          body: |
+            This PR was created automatically by the changeset release workflow.
+
+            **Version bump:** `${{ steps.bump.outputs.old_version }}` → `${{ steps.bump.outputs.new_version }}`
+
+            Merge this PR to publish the new version.
+          commit-message: "chore: release v${{ steps.bump.outputs.new_version }}"
+          labels: release
