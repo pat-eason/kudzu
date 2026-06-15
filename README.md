@@ -163,9 +163,9 @@ when they clone the repo.
 | `~/.claude/kudzu/config.global.md` | Personal dotfiles | ✓ Yes |
 | `~/.claude/kudzu/config.machine.md` | Local only | ✗ Never |
 | `.kudzu/config.project.md` | Project repo | ✓ Yes |
-| `PRD.md`, `ARCH_DECISIONS.md` | Project repo | Recommended |
-| `IMPL_SPECS/`, `REVIEW_SPECS/` | Project repo | Recommended |
-| `CONTEXT.md` | Project repo | Your call |
+| `.kudzu/<type>/<topic>/PRD.md`, `ARCH_DECISIONS.md` | Project repo | Recommended |
+| `.kudzu/<type>/<topic>/IMPL_SPECS/`, `REVIEW_SPECS/` | Project repo | Recommended |
+| `.kudzu/<type>/<topic>/CONTEXT.md` | Project repo | Your call |
 
 ---
 
