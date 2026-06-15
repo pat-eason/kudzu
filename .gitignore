@@ -11,6 +11,10 @@ PRD.md
 ARCH_DECISIONS.md
 CHUNKS.json
 INTERFACE_REGISTRY.md
+
+# Re-include template originals that live inside this repo
+!framework/templates/CONTEXT.md
+!framework/templates/INTERFACE_REGISTRY.md
 SESSION_BRIEF.md
 DELTA.md
 REVIEW.md
