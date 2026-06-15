@@ -1,5 +1,4 @@
 ---
-name: gate
 description: >
   Record or review a Kudzu HITL gate decision. Shows what needs your
   attention at the current gate. Writes the gate decision file when

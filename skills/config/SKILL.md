@@ -1,5 +1,4 @@
 ---
-name: config
 description: >
   Internal config loader for Kudzu. Merges global, machine, and project
   config layers into a single resolved config. Called automatically by all

@@ -1,5 +1,4 @@
 ---
-name: checkpoint
 description: >
   Manually saves Kudzu project state to CONTEXT.md and INTERFACE_REGISTRY.md.
   Use when stopping mid-work, doing work outside the /implement flow,
@@ -11,7 +10,7 @@ model: claude-sonnet-4-6
 ---
 
 Read the checkpoint instructions:
-`${CLAUDE_SKILL_DIR}/../../framework/skills/delivery/checkpoint.md`
+`@kudzu:checkpoint-agent`
 
 Read available files (use what exists):
 CONTEXT.md, DELTA.md, REVIEW.md, SECURITY_REVIEW.md, TEST_REPORT.md

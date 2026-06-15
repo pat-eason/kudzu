@@ -1,5 +1,4 @@
 ---
-name: implement
 description: >
   Kudzu BUILD phase. Runs the full per-chunk pipeline automatically:
   session brief → engineer → code review → QA → security (when triggered)
@@ -61,13 +60,13 @@ relevant OPEN_BUGS, relevant arch decisions (AD-N references).
 ### Step 2: Engineer
 
 Spawn Software Engineer (Sonnet) via Task:
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/implementation/engineer.md`
+Instructions: `@kudzu:engineer`
 Input: SESSION_BRIEF.md + files listed in it
 Output: code files + `DELTA.md` + optional `BLOCKER.md`
 
 **If BLOCKER.md appears:**
 Spawn Software Architect (Opus) via Task — MODE 5 (Blocker Resolution):
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/implementation/architect.md`
+Instructions: `@kudzu:architect`
 Input: BLOCKER.md + IMPL_SPECS/chunk-N.md
 Output: `BLOCKER_RESOLUTION.md` + amended IMPL_SPECS/chunk-N.md
 
@@ -89,7 +88,7 @@ Set `security_triggered = true` if any match OR chunk has `security_review: true
 ### Step 4: Code review
 
 Spawn Code Reviewer (Sonnet) via Task:
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/review/code-reviewer.md`
+Instructions: `@kudzu:code-reviewer`
 Input: DELTA.md + REVIEW_SPECS/chunk-N.md + IMPL_SPECS/chunk-N.md +
        INTERFACE_REGISTRY.md + CONTEXT.md (for patterns)
 Output: `REVIEW.md`
@@ -102,7 +101,7 @@ If ARCH_REVIEW.md verdict is REVISE_IMPLEMENTATION: re-run engineer → loop to 
 ### Step 5: QA
 
 Spawn QA Analyst (Sonnet) via Task:
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/review/qa-analyst.md`
+Instructions: `@kudzu:qa-analyst`
 Input: DELTA.md + REVIEW_SPECS/chunk-N.md + IMPL_SPECS/chunk-N.md + code
 Output: `TEST_REPORT.md` + test files
 
@@ -114,7 +113,7 @@ Set `needs_human = true`. Continue to Gate 4 check.
 
 If `security_triggered = true` OR chunk has `load_bearing: true`:
 Spawn Security Analyst (Opus) via Task:
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/review/security-analyst.md`
+Instructions: `@kudzu:security-analyst`
 Input: DELTA.md + code + REVIEW_SPECS/chunk-N.md + PRD.md security section
 Output: `SECURITY_REVIEW.md`
 
@@ -166,7 +165,7 @@ Write `GATE_4_DECISION_chunk[N].md`. Update CONTEXT.md gate status.
 ### Step 8: Documentation
 
 Spawn Documentarian (Sonnet) via Task:
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/delivery/documentarian.md`
+Instructions: `@kudzu:documentarian`
 Input: DELTA.md + REVIEW.md + PRD.md + existing docs
 (Documentarian internally spawns Technical Writer (Haiku) for writing)
 Output: `DOC_PLAN.md` + updated docs
@@ -177,7 +176,7 @@ Technical writer updates Notion pages directly using page IDs from config.
 ### Step 9: Linear + PR
 
 Spawn Project Manager (Sonnet) via Task — MODE 2:
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/planning/project-manager.md`
+Instructions: `@kudzu:project-manager`
 Input: DELTA.md + REVIEW.md + TEST_REPORT.md + SECURITY_REVIEW.md (if present)
 Output: `LINEAR_UPDATE.md` or direct Linear MCP calls
 
@@ -187,7 +186,7 @@ Else: write `PR_DESCRIPTION.md` for manual paste.
 ### Step 10: Checkpoint
 
 Spawn Checkpoint (Sonnet) via Task:
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/delivery/checkpoint.md`
+Instructions: `@kudzu:checkpoint-agent`
 Input: CONTEXT.md + DELTA.md + REVIEW.md + SECURITY_REVIEW.md + TEST_REPORT.md + chunk_id
 Output: updated `CONTEXT.md` + updated `INTERFACE_REGISTRY.md`
 

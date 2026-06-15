@@ -1,14 +1,14 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
   "name": "kudzu",
-  "version": "1.0.0",
-  "description": "Kudzu — an agentic SDLC framework for Claude Code. Three commands cover the full cycle: /research, /plan, /implement. Everything else runs automatically with HITL gates where your judgment actually matters.",
+  "version": "1.0.1",
+  "description": "Kudzu — an agentic SDLC framework for Claude Code. Three commands cover the full cycle: /kudzu:research, /kudzu:plan, /kudzu:implement. Everything else runs automatically with HITL gates where your judgment actually matters.",
   "author": {
-    "name": "Pat (Denworks)",
-    "email": "pat@denworks.io"
+    "name": "Pat Eason",
+    "email": "patrick@pateason.io"
   },
-  "homepage": "https://github.com/denworks/kudzu",
-  "repository": "https://github.com/denworks/kudzu",
+  "homepage": "https://github.com/pat-eason/kudzu",
+  "repository": "https://github.com/pat-eason/kudzu",
   "license": "MIT",
   "keywords": [
     "sdlc",

@@ -1,5 +1,4 @@
 ---
-name: status
 description: >
   Kudzu project status dashboard. Shows current phase, gate states,
   chunk progress, open bugs, security flags, and next action.

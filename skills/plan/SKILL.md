@@ -1,5 +1,4 @@
 ---
-name: plan
 description: >
   Kudzu PLAN phase. Takes an approved PRD (from /kudzu:research or your own)
   and produces a full implementation plan: architecture decisions, dependency-
@@ -19,7 +18,7 @@ chunk by chunk with full context in each session.
 
 **1. Load config:** Run `kudzu:config`. Store resolved config.
 **2. Check state:** Read CONTEXT.md. Check GATE_STATUS.
-**3. Load framework:** `${CLAUDE_SKILL_DIR}/../../framework/skills/implementation/architect.md`
+**3. Load framework:** `@kudzu:architect`
 
 ## Gate check
 
@@ -49,7 +48,7 @@ If validation fails: list failing fields, stop, ask user to fix PRD.
 ## Step 2: Architecture decisions
 
 Spawn Software Architect subagent (Opus) via Task:
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/implementation/architect.md`
+Instructions: `@kudzu:architect`
 Mode 1 (Decomposition)
 Input: PRD.md + GATE_2_DECISION.md + stack context from config
 Output: `ARCH_DECISIONS.md` (numbered AD-N, LBI-N format)
@@ -73,7 +72,7 @@ Each REVIEW_SPECS must include:
 ## Step 4: Decomposition review
 
 Spawn Concept Reviewer subagent (Opus) via Task:
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/planning/concept-reviewer.md`
+Instructions: `@kudzu:concept-reviewer`
 Mode 2 (Decomposition review)
 Input: CHUNKS.json + IMPL_SPECS/ + PRD.md
 Output: `DECOMP_REVIEW.md`
@@ -126,7 +125,7 @@ Update CONTEXT.md:
 ## Step 7: Linear setup (if Gate 3 approved)
 
 Spawn Project Manager subagent (Sonnet) via Task:
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/planning/project-manager.md`
+Instructions: `@kudzu:project-manager`
 Mode 1 (Project setup)
 Input: GATE_3_DECISION.md + CHUNKS.json + PRD.md
 

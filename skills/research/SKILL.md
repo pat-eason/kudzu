@@ -1,5 +1,4 @@
 ---
-name: research
 description: >
   Kudzu DISCOVER phase. Researches anything before you build it.
   Detects intent automatically: concept research, bug triage, decision
@@ -25,7 +24,7 @@ PROJECT_AUTH to researcher subagents as stack context constraints.
 **2. Check project state:** Read `CONTEXT.md` if it exists.
 Check GATE_STATUS. If a gate is PENDING, surface it before doing anything else.
 
-**3. Read framework:** Load `${CLAUDE_SKILL_DIR}/../../framework/skills/planning/project-planner.md`
+**3. Read framework:** Load `@kudzu:project-planner`
 
 ## Intent detection from $ARGUMENTS
 
@@ -62,12 +61,12 @@ informal check, not a gate.
 Use the Task tool to run both simultaneously:
 
 **Researcher Pro** (Opus):
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/planning/researcher-pro.md`
+Instructions: `@kudzu:researcher-pro`
 Input: CONCEPT_BRIEF.md + stack context from config
 Output: `PRO_FINDINGS.md`
 
 **Researcher Con** (Opus):
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/planning/researcher-con.md`
+Instructions: `@kudzu:researcher-con`
 Input: CONCEPT_BRIEF.md + stack context from config
 Output: `CON_FINDINGS.md`
 
@@ -76,7 +75,7 @@ Tell user: "Researching from two angles in parallel..."
 ### Step 3: Concept review
 
 Spawn Concept Reviewer (Opus) via Task:
-Instructions: `${CLAUDE_SKILL_DIR}/../../framework/skills/planning/concept-reviewer.md`
+Instructions: `@kudzu:concept-reviewer`
 Mode 1 (viability review)
 Input: PRO_FINDINGS.md + CON_FINDINGS.md
 Output: `VIABILITY_REPORT.md`

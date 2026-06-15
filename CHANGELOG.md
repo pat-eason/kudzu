@@ -34,3 +34,17 @@ Kudzu uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - ENVIRONMENT_BLOCKED state for QA when test infrastructure is missing.
 - Chunk state machine (IN_PROGRESS → UNDER_REVIEW → APPROVED | BLOCKED | PENDING_GATE).
 - CONTEXT.md compression trigger at 300 lines.
+
+## [1.0.1] — 2026-06-15
+
+### Fixed
+- `homepage` and `repository` in plugin.json and marketplace.json now point to
+  `https://github.com/pat-eason/kudzu` (was `denworks/kudzu`)
+- `author.email` corrected to `patrick@pateason.io` (was `pat@denworks.io`)
+- Removed `name:` field from all SKILL.md frontmatter — skills now correctly
+  register as `/kudzu:research`, `/kudzu:plan`, `/kudzu:implement`, etc. instead
+  of the unnamespaced `/research`, `/plan`, `/implement`
+- Moved all 13 specialist agents from `framework/skills/` to `agents/` directory
+  at the plugin root so they are visible and invocable after install
+- Updated all orchestrator skills to invoke agents via `@kudzu:agent-name` instead
+  of reading framework file paths directly

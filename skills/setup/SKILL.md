@@ -1,5 +1,4 @@
 ---
-name: setup
 description: >
   First-run setup for Kudzu. Creates config files, walks you through
   filling in your identity and credentials, and validates the installation.

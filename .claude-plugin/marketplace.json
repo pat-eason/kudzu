@@ -3,22 +3,22 @@
   "name": "kudzu-marketplace",
   "description": "Kudzu SDLC Plugin — official distribution marketplace",
   "owner": {
-    "name": "Pat (Denworks)",
-    "email": "pat@denworks.io"
+    "name": "Pat Eason",
+    "email": "patrick@pateason.io"
   },
   "plugins": [
     {
       "name": "kudzu",
       "displayName": "Kudzu SDLC",
-      "description": "Agentic SDLC framework. /research → /plan → /implement. Covers concept research, bug triage, feature planning, implementation, code review, QA, security analysis, documentation, and Linear/GitHub/Notion integration.",
+      "description": "Agentic SDLC framework. /kudzu:research → /kudzu:plan → /kudzu:implement. Covers concept research, bug triage, feature planning, implementation, code review, QA, security analysis, documentation, and Linear/GitHub/Notion integration.",
       "source": ".",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": {
-        "name": "Pat (Denworks)",
-        "email": "pat@denworks.io"
+        "name": "Pat Eason",
+        "email": "patrick@pateason.io"
       },
-      "homepage": "https://github.com/denworks/kudzu",
-      "repository": "https://github.com/denworks/kudzu",
+      "homepage": "https://github.com/pat-eason/kudzu",
+      "repository": "https://github.com/pat-eason/kudzu",
       "license": "MIT",
       "keywords": ["sdlc", "agentic", "research", "planning", "implementation"],
       "category": "productivity",
