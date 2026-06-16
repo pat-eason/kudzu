@@ -6,6 +6,17 @@ Kudzu uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.1] — 2026-06-16
+
+### Changed
+- Downgraded agents that don't need Opus to Sonnet or Haiku: researchers (pro/con),
+  concept-reviewer, project-manager, research/plan orchestrators, and Architect Mode 3.
+- Eliminated per-chunk SESSION_BRIEF agent spawn (redundant with IMPL_SPECS).
+- Collapsed the Documentarian→TechnicalWriter two-agent doc chain into a single Haiku pass.
+- Merged REVIEW_SPECS into IMPL_SPECS as a Reviewer Notes section, eliminating a file class.
+
+---
+
 ## [1.1.0] — 2026-06-15
 
 ### Changed

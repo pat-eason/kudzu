@@ -12,7 +12,7 @@
       "displayName": "Kudzu SDLC",
       "description": "Agentic SDLC framework. /kudzu:research → /kudzu:plan → /kudzu:implement. Covers concept research, bug triage, feature planning, implementation, code review, QA, security analysis, documentation, and Linear/GitHub/Notion integration.",
       "source": ".",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "Pat Eason",
         "email": "patrick@pateason.io"

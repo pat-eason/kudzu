@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
   "name": "kudzu",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Kudzu — an agentic SDLC framework for Claude Code. Three commands cover the full cycle: /kudzu:research, /kudzu:plan, /kudzu:implement. Everything else runs automatically with HITL gates where your judgment actually matters.",
   "author": {
     "name": "Pat Eason",
